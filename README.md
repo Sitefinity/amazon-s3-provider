@@ -1,6 +1,8 @@
 Using Sitefinity's Amazon S3 Blob Storage Provider
 ===================================================
- 
+
+Full documentation: https://github.com/Sitefinity/amazon-s3-provider/wiki
+
 Overview
 ----------
 Sitefinity's Amazon S3 Blob Storage Provider is an implementation of a cloud blob storage provider, which stores the binary blob data of Sitefinity's library items on Amazon's Simple Storage Service (S3). This document describes how to use the provider.
@@ -100,7 +102,7 @@ In Google Chrome:
 Once you have the bookmarklet in place, click it anytime to get further instructions. After every step (creating the provider, navigating to the parameters, creating each parameter) you can click it again and you'll be prompted what to do next.
 
 What this bookmarklet can do for you when you click it:
-* Guide you where to start…
+* Guide you where to startï¿½
 * Instruct you on your next step
 * Help you fill data
 * And tell you what to do next
