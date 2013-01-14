@@ -71,6 +71,17 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         public override void SetProperties(IBlobContentLocation location, IBlobProperties properties)
         {
             //No properties to set by default
+            var req = new CopyObjectRequest()
+                             .WithDirective(S3MetadataDirective.REPLACE)
+                             .WithSourceBucket(this.bucketName)
+                             .WithSourceKey(location.FilePath)
+                             .WithDestinationBucket(this.bucketName)
+                             .WithDestinationKey(location.FilePath);
+
+            req.AddHeader("Cache-Control", properties.CacheControl);
+            req.AddHeader("Content-Type", properties.ContentType);
+
+            transferUtility.S3Client.CopyObject(req);
         }
 
         /// <summary>
@@ -80,8 +91,15 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <returns>The retrieved properties.</returns>
         public override IBlobProperties GetProperties(IBlobContentLocation location)
         {
-            //No properties to get by default
-            return null;
+            var request = new GetObjectRequest().WithBucketName(this.bucketName).WithKey(location.FilePath);
+            GetObjectResponse response = transferUtility.S3Client.GetObject(request);
+
+            return new BlobProperties
+            {
+
+                ContentType = response.Headers["Content-Type"],
+                CacheControl = response.Headers["Cache-Control"],
+            };
         }
 
         /// <summary>

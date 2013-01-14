@@ -28,6 +28,30 @@ Code and Notable Features
 * Sitefinity's Amazon S3 provider points to a specific storage bucket (its name is set on the provider's parameters).  Items which are uploaded to Sitefinity's library are stored in that bucket, under a folder which matches the name of the library.
 
 
+Getting and Setting Properties (HTTP Headers)
+----------------------------------------------
+The methods GetProperties and SetProperties are used to set and retrieve information blob item's headers  respectively.
+By default (see AmazonBlobStorageProvider.cs) SetProperties is used for storing headers regarding cache-control and content-type. This happens when the object is uploaded to Amazon's S3.
+GetProperties can retrieve the information in those headers at any time. Here is an example how it may be invoked:
+
+	IBlobProperties GetBlobPropertiesForDocument(string blobPrviderName, string documentTitle)
+	{
+		BlobStorageManager mgr = BlobStorageManager.GetManager(blobPrviderName);
+		IBlobProperties props = null;
+		if (mgr.Provider is AmazonBlobStorageProvider)
+		{
+			LibrariesManager libMan = LibrariesManager.GetManager();
+			var doc = libMan.GetDocuments().FirstOrDefault(d => d.Title == documentTitle);
+			if (doc != null)
+			{
+				AmazonBlobStorageProvider amznProv = mgr.Provider as AmazonBlobStorageProvider;
+				props = amznProv.GetProperties(new BlobContentLocation(doc));
+			}
+		}
+		return props;
+	}
+
+
 Using the Sitefinity Amazon S3 Blob Storage Provider in your Sitefinity project
 ---------------------------------------------------------------------------------
 
