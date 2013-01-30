@@ -78,6 +78,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                              .WithDestinationBucket(this.bucketName)
                              .WithDestinationKey(location.FilePath);
 
+			req.AddHeader("x-amz-acl", "public-read");
             req.AddHeader("Cache-Control", properties.CacheControl);
             req.AddHeader("Content-Type", properties.ContentType);
 
