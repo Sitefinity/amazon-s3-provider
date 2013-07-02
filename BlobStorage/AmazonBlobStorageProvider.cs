@@ -117,16 +117,19 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 .WithKey(content.FilePath)
                 .WithPartSize(bufferSize)
                 .WithContentType(content.MimeType);
-
+ 
             //set the item's accessibility as public
             request.AddHeader("x-amz-acl", "public-read");
-
+ 
             //get it before the upload, because afterwards the stream is closed already
             long sourceLength = source.Length;
-            request.InputStream = source;
-
-            this.transferUtility.Upload(request);
-
+            using (MemoryStream str = new MemoryStream())
+            {
+                source.CopyTo(str);
+                request.InputStream = str;
+ 
+                this.transferUtility.Upload(request);
+            }
             return sourceLength;
         }
 
