@@ -55,45 +55,46 @@ GetProperties can retrieve the information in those headers at any time. Here is
 Using the Sitefinity Amazon S3 Blob Storage Provider in your Sitefinity project
 ---------------------------------------------------------------------------------
 
-Build the assembly:
+**Build the assembly:**
 
 1. Build the Telerik.Sitefinity.Amazon project.
 2. Add the built binary Telerik.Sitefinity.Amazon.dll as a reference to your SitefinityWebApp project.
+3. Make sure both Telerik.Sitefinity.Amazon.dll and AWSSDK.dll are copied to the bin folder of your Sitefinity web application.
 
 
-Register the provider in Sitefinity's configuration:
+**Register the provider in Sitefinity's configuration:**
  
-1. On Sitefinity's Backend's main menu go to the advanced Settings: Administration > Settings and click [Advanced].
+1. On Sitefinity's Backend's main menu go to the advanced Settings: *Administration » Settings* and click *Advanced*.
 
-2. On the tree navigate to Libraries ? Blob storage providers and click Create new.
+2. On the tree navigate to *Libraries » Blob storage providers* and click *Create new*.
 
-3. Fill in the Name and Title for your provider.
-In the ProviderType field, enter the assembly qualified name of your provider's class.
+3. Fill in the *Name* and *Title* for your provider.
+In the *ProviderType* field, enter the assembly qualified name of your provider's class.
+Click *Save changes*.
+
+4. On the tree navigate to your newly created provider » *Parameters* and click *Create new*.  
+In the *Key* field enter **accessKeyId**, in the *Value* field enter your Amazon S3 Access Key.
+Click *Save changes*.
+
+5. On the tree navigate again to your newly created provider » *Parameters* and again click *Create new*.  
+In the *Key* field enter **secretKey**, in the *Value* field enter your Amazon S3 Secret Key.
+Click *Save changes*.
+
+6. On the tree navigate again to your newly created provider » *Parameters* and again click *Create new*.
+In the *Key* field enter **bucketName**, in the *Value* field enter the name of the Amazon S3 bucket which you wish to associate with this provider.
 Click Save changes.
 
-4. On the tree navigate to your newly created provider ? Parameters and click Create new.
-In the Key field enter "accessKeyId", in the Value field enter your Amazon S3 Access Key.
-Click Save changes.
 
-5. On the tree navigate again to your newly created provider ? Parameters and again click Create new.
-In the Key field enter "secretKey", in the Value field enter your Amazon S3 Secret Key.
-Click Save changes.
-
-6.On the tree navigate again to your newly created provider ? Parameters and again click Create new.
-In the Key field enter "bucketName", in the Value field enter the name of the Amazon S3 bucket which you wish to associate with this provider.
-Click Save changes.
-
-
-Associate a library with Amazon S3 Blob storage:
+**Associate a library with Amazon S3 Blob storage:**
 
 1. On Sitefinity's Backend's main menu go to one of the library modules:
-Content > Images / Videos / Documents & Files.
+*Content » Images / Videos / Documents & Files*.
 
-2. Click Manage libraries.
+2. Click *Manage libraries*.
 
-3. On the Libraries grid, choose the library you wish to associate a library with Amazon S3 Blob storage. Expand the Actions menu and select Move to another storage.
+3. On the *Libraries* grid, choose the library you wish to associate a library with Amazon S3 Blob storage. Expand the *Actions* menu and select *Move to another storage*.
  
-4. In the drop-down list, on the dialog which pops up, select your Amazon S3 Blob Provider and click Move library.
+4. In the drop-down list, on the dialog which pops up, select your Amazon S3 Blob Provider and click *Move library*.
 
 Now the binary data of items in your selected library will be persisted in Amazon's S3 storage instead of Sitefinity's database.
 
@@ -107,26 +108,29 @@ It's been tested to work with Google Chrome v23, Firefox v17.0 (not on Internet 
 How to use the code:
 The easiest way to use a bookmarklet is to create a bookmark and set its URL to contain the script.
 
-In Firefox:
+**In Firefox:**
+
 1.	Create an arbitrary bookmark (no matter to which page).
-2.	Right-click the created bookmark and in the context menu select Properties.
-3.	In the Name field enter a title for the bookmarklet. E.g. "Create AmazonS3 Blob Storage Provider".
-4.	In the Location field paste the whole code listed below.
-5.	Click Save.
+2.	Right-click the created bookmark and in the context menu select *Properties*.
+3.	In the *Name* field enter a title for the bookmarklet. E.g. **Create AmazonS3 Blob Storage Provider**.
+4.	In the *Location* field paste the whole code listed below.
+5.	Click *Save*.
 6.	To use the bookmarklet, simply click it.
 
-In Google Chrome:
+**In Google Chrome:**
+
 1.	Create an arbitrary bookmark (no matter to which page).
-2.	Right-click the created bookmark and in the context menu select Edit...
-3.	In the Name field enter a title for the bookmarklet. E.g. "Create AmazonS3 Blob Storage Provider".
-4.	In the URL field paste the whole code listed below.
-5.	Click Save.
+2.	Right-click the created bookmark and in the context menu select *Edit...*
+3.	In the Name field enter a title for the bookmarklet. E.g. **Create AmazonS3 Blob Storage Provider**.
+4.	In the *URL* field paste the whole code listed below.
+5.	Click *Save*.
 6.	To use the bookmarklet, simply click it.
 
 Once you have the bookmarklet in place, click it anytime to get further instructions. After every step (creating the provider, navigating to the parameters, creating each parameter) you can click it again and you'll be prompted what to do next.
 
 What this bookmarklet can do for you when you click it:
-* Guide you where to start�
+
+* Guide you where to start
 * Instruct you on your next step
 * Help you fill data
 * And tell you what to do next
