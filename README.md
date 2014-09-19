@@ -9,11 +9,11 @@ Sitefinity's Amazon S3 Blob Storage Provider is an implementation of a cloud blo
 
 Note that only the binary data of the items in a library are stored on the remote blob storage. Sitefinity still manages its logical items by library with their regular meta-data properties (title, description etc) in its own database.
 
-For additional documentation about Sitefinity's Blob storage and Blob storage providers, please refer to Sitefinity's documentation at: http://www.sitefinity.com/documentation/documentationarticles/developers-guide/deep-dive/blob-storage-providers
+For additional documentation about Sitefinity's Blob storage and Blob storage providers, see the [Blob Storage Providers](http://www.sitefinity.com/documentation/documentationarticles/developers-guide/deep-dive/blob-storage-providers "Blob Storage providers") article on the Sitefinity documentation.
 
-For additional information about Amazon's S3 and to obtain the Amazon S3 SDK, please refer to: http://aws.amazon.com/s3/
+For additional information about Amazon's S3 and to obtain the Amazon S3 SDK, please refer to: [http://aws.amazon.com/s3/](http://aws.amazon.com/s3/)
 
-For debug (and other) purposes, you may also interact with your Amazon S3 with external clients, such as CloudBerry's Amazon Explorer for Amazon S3 Free tool: http://www.cloudberrylab.com/free-amazon-s3-explorer-cloudfront-IAM.aspx
+For debug (and other) purposes, you may also interact with your Amazon S3 with external clients, such as [CloudBerry's Amazon Explorer for Amazon S3 Free tool](http://www.cloudberrylab.com/free-amazon-s3-explorer-cloudfront-IAM.aspx)
 
  
 Code and Notable Features
