@@ -46,15 +46,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.OpenAccess, Version=2010.3.1306.1, Culture=neutral, PublicKeyToken=7ce17eeaf1d59342, processorArchitecture=MSIL">
+    <Reference Include="Telerik.OpenAccess">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Desktop\Sitefinity versions\Projects\sftest\bin\Telerik.OpenAccess.dll</HintPath>
+      <HintPath>..\bin\Telerik.OpenAccess.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Sitefinity">
-      <HintPath>..\..\..\Desktop\Sitefinity versions\Projects\sftest\bin\Telerik.Sitefinity.dll</HintPath>
+      <HintPath>..\bin\Telerik.Sitefinity.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Sitefinity.Model">
-      <HintPath>..\..\..\Desktop\Sitefinity versions\Projects\sftest\bin\Telerik.Sitefinity.Model.dll</HintPath>
+      <HintPath>..\bin\Telerik.Sitefinity.Model.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
