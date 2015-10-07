@@ -232,7 +232,5 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         TransferUtility transferUtility;
 
         #endregion
-
-
     }
 }
