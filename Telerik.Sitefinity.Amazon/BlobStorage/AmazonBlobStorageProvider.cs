@@ -187,7 +187,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 BucketName = this.bucketName,
                 Key = location.FilePath
             };
-            transferUtility.S3Client.BeginDeleteObject(request, null, null);
+            transferUtility.S3Client.DeleteObject(request);
         }
 
         /// <summary>
