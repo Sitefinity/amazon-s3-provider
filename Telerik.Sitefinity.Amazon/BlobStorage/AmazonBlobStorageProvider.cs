@@ -26,12 +26,14 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <param name="config">The collection of parameters (each by its name and value) of the current provider's configuration settings.</param>
         protected override void InitializeStorage(NameValueCollection config)
         {
+            this.useIamInstanceRole = bool.Parse(config[UseIamInstanceRoleKey].Trim());
+
             this.accessKeyId = config[AccessKeyIdKey].Trim();
-            if (String.IsNullOrEmpty(this.accessKeyId))
+            if (!this.useIamInstanceRole && String.IsNullOrEmpty(this.accessKeyId))
                 throw new ConfigurationException("'{0}' is required.".Arrange(AccessKeyIdKey));
 
             this.secretKey = config[SecretKeyKey].Trim();
-            if (String.IsNullOrEmpty(this.secretKey))
+            if (!this.useIamInstanceRole && String.IsNullOrEmpty(this.secretKey))
                 throw new ConfigurationException("'{0}' is required.".Arrange(SecretKeyKey));
 
             this.bucketName = config[BucketNameKey].Trim();
@@ -48,7 +50,11 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 throw new ConfigurationException("'{0}' is required.".Arrange(RegionEndpointKey));
 
             var regionEndpoint = (RegionEndpoint)endpointField.GetValue(null);
-            this.transferUtility = new TransferUtility(accessKeyId, secretKey, regionEndpoint);
+
+            if (this.useIamInstanceRole)
+                this.transferUtility = new TransferUtility(regionEndpoint);
+            else
+                this.transferUtility = new TransferUtility(accessKeyId, secretKey, regionEndpoint);
         }
 
         /// <summary>
@@ -88,7 +94,8 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         public override void SetProperties(IBlobContentLocation location, IBlobProperties properties)
         {
             //No properties to set by default
-            var req = new CopyObjectRequest() { 
+            var req = new CopyObjectRequest()
+            {
                 MetadataDirective = S3MetadataDirective.REPLACE,
                 SourceBucket = this.bucketName,
                 SourceKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
@@ -99,7 +106,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
 
             req.Headers.CacheControl = properties.CacheControl;
             req.Headers.ContentType = properties.ContentType;
-            
+
             transferUtility.S3Client.CopyObject(req);
         }
 
@@ -136,19 +143,19 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new TransferUtilityUploadRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath), 
+                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath),
                 PartSize = bufferSize,
                 ContentType = content.MimeType,
                 CannedACL = S3CannedACL.PublicRead
             };
- 
+
             //get it before the upload, because afterwards the stream is closed already
             long sourceLength = source.Length;
             using (MemoryStream str = new MemoryStream())
             {
                 source.CopyTo(str);
                 request.InputStream = str;
- 
+
                 this.transferUtility.Upload(request);
             }
             return sourceLength;
@@ -212,7 +219,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 return true;
             }
             catch (AmazonS3Exception err)
-            { 
+            {
             }
             return false;
         }
@@ -220,7 +227,8 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         #endregion
 
         #region Properties
-        
+
+        public const string UseIamInstanceRoleKey = "useIamInstanceRole";
         public const string AccessKeyIdKey = "accessKeyId";
         public const string SecretKeyKey = "secretKey";
         public const string BucketNameKey = "bucketName";
@@ -230,7 +238,8 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         #endregion
 
         #region Fields
-        
+
+        private bool useIamInstanceRole = false;
         private string accessKeyId = "";
         private string secretKey = "";
         private string bucketName = "";
