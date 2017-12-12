@@ -2,3 +2,4 @@ bin/
 obj/
 /packages
 /.nuget/NuGet.exe
+/.vs
