@@ -38,6 +38,10 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             if (String.IsNullOrEmpty(this.bucketName))
                 throw new ConfigurationException("'{0}' is required.".Arrange(BucketNameKey));
 
+            this.keyPrefix = config[KeyPrefixKey].Trim();
+            if (this.keyPrefix == null)
+                this.keyPrefix = "";
+
             string regionEndpointString = config[RegionEndpointKey].Trim();
             var endpointField = typeof(RegionEndpoint).GetField(regionEndpointString, BindingFlags.Static | BindingFlags.Public);
             if ((string.IsNullOrWhiteSpace(regionEndpointString)) || (endpointField == null))
@@ -54,7 +58,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <returns>The resolved content item's external URL on the remote blob storage.</returns>
         public override string GetItemUrl(IBlobContentLocation content)
         {
-            return string.Concat("http://", this.bucketName, ".s3.amazonaws.com/", content.FilePath);
+            return string.Concat("http://", this.bucketName, ".s3.amazonaws.com/", string.Format("{0}{1}", this.keyPrefix, content.FilePath));
         }
 
         /// <summary>
@@ -67,9 +71,9 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new CopyObjectRequest()
             {
                 SourceBucket = this.bucketName,
-                SourceKey = source.FilePath,
+                SourceKey = string.Format("{0}{1}", this.keyPrefix, source.FilePath),
                 DestinationBucket = this.bucketName,
-                DestinationKey = destination.FilePath,
+                DestinationKey = string.Format("{0}{1}", this.keyPrefix, destination.FilePath),
                 CannedACL = S3CannedACL.PublicRead
             };
 
@@ -87,7 +91,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var req = new CopyObjectRequest() { 
                 MetadataDirective = S3MetadataDirective.REPLACE,
                 SourceBucket = this.bucketName,
-                SourceKey = location.FilePath,
+                SourceKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
                 DestinationBucket = this.bucketName,
                 DestinationKey = location.FilePath,
                 CannedACL = S3CannedACL.PublicRead
@@ -108,8 +112,8 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         {
             var request = new GetObjectRequest()
             {
-               BucketName = this.bucketName,
-               Key = location.FilePath
+                BucketName = this.bucketName,
+                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
             };
             GetObjectResponse response = transferUtility.S3Client.GetObject(request);
 
@@ -132,7 +136,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new TransferUtilityUploadRequest()
             {
                 BucketName = this.bucketName,
-                Key = content.FilePath, 
+                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath), 
                 PartSize = bufferSize,
                 ContentType = content.MimeType,
                 CannedACL = S3CannedACL.PublicRead
@@ -169,8 +173,8 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         {
             TransferUtilityOpenStreamRequest request = new TransferUtilityOpenStreamRequest()
             {
-               BucketName = this.bucketName,
-               Key = content.FilePath
+                BucketName = this.bucketName,
+                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath)
             };
             var stream = this.transferUtility.OpenStream(request);
             return stream;
@@ -185,7 +189,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new DeleteObjectRequest()
             {
                 BucketName = this.bucketName,
-                Key = location.FilePath
+                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
             };
             transferUtility.S3Client.DeleteObject(request);
         }
@@ -200,7 +204,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new GetObjectRequest()
             {
                 BucketName = this.bucketName,
-                Key = location.FilePath
+                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
             };
             try
             {
@@ -216,19 +220,22 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         #endregion
 
         #region Properties
-
+        
         public const string AccessKeyIdKey = "accessKeyId";
         public const string SecretKeyKey = "secretKey";
         public const string BucketNameKey = "bucketName";
+        public const string KeyPrefixKey = "keyPrefix";
         public const string RegionEndpointKey = "regionEndpoint";
 
         #endregion
 
         #region Fields
-
+        
         private string accessKeyId = "";
         private string secretKey = "";
         private string bucketName = "";
+        private string keyPrefix = "";
+
         TransferUtility transferUtility;
 
         #endregion
