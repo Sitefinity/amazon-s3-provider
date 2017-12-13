@@ -26,7 +26,12 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <param name="config">The collection of parameters (each by its name and value) of the current provider's configuration settings.</param>
         protected override void InitializeStorage(NameValueCollection config)
         {
-            this.useIamInstanceRole = bool.Parse(config[UseIamInstanceRoleKey].Trim());
+            var useIamInstanceRoleValue = "false";
+            if (config.AllKeys.Contains(UseIamInstanceRoleKey))
+                useIamInstanceRoleValue = config[UseIamInstanceRoleKey].Trim();
+
+            if (!bool.TryParse(useIamInstanceRoleValue, out this.useIamInstanceRole))
+                throw new ConfigurationException("'{0}' unable to parse {1}".Arrange(UseIamInstanceRoleKey, useIamInstanceRoleValue));
 
             this.accessKeyId = config[AccessKeyIdKey].Trim();
             if (!this.useIamInstanceRole && String.IsNullOrEmpty(this.accessKeyId))
@@ -40,8 +45,10 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             if (String.IsNullOrEmpty(this.bucketName))
                 throw new ConfigurationException("'{0}' is required.".Arrange(BucketNameKey));
 
-            this.keyPrefix = config[KeyPrefixKey].Trim();
-            if (this.keyPrefix == null)
+            if (config.AllKeys.Contains(KeyPrefixKey))
+                this.keyPrefix = config[KeyPrefixKey].Trim();
+
+            if (string.IsNullOrWhiteSpace(this.keyPrefix))
                 this.keyPrefix = "";
 
             string regionEndpointString = config[RegionEndpointKey].Trim();
@@ -100,7 +107,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 SourceBucket = this.bucketName,
                 SourceKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
                 DestinationBucket = this.bucketName,
-                DestinationKey = location.FilePath,
+                DestinationKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
                 CannedACL = S3CannedACL.PublicRead
             };
 
