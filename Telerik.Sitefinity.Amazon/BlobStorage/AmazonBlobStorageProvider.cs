@@ -71,7 +71,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <returns>The resolved content item's external URL on the remote blob storage.</returns>
         public override string GetItemUrl(IBlobContentLocation content)
         {
-            return string.Concat("http://", this.bucketName, ".s3.amazonaws.com/", string.Format("{0}{1}", this.keyPrefix, content.FilePath));
+            return string.Concat("http://", this.bucketName, ".s3.amazonaws.com/", "{0}{1}".Arrange(this.keyPrefix, content.FilePath));
         }
 
         /// <summary>
@@ -84,9 +84,9 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new CopyObjectRequest()
             {
                 SourceBucket = this.bucketName,
-                SourceKey = string.Format("{0}{1}", this.keyPrefix, source.FilePath),
+                SourceKey = "{0}{1}".Arrange(this.keyPrefix, source.FilePath),
                 DestinationBucket = this.bucketName,
-                DestinationKey = string.Format("{0}{1}", this.keyPrefix, destination.FilePath),
+                DestinationKey = "{0}{1}".Arrange(this.keyPrefix, destination.FilePath),
                 CannedACL = S3CannedACL.PublicRead
             };
 
@@ -105,9 +105,9 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             {
                 MetadataDirective = S3MetadataDirective.REPLACE,
                 SourceBucket = this.bucketName,
-                SourceKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
+                SourceKey = "{0}{1}".Arrange(this.keyPrefix, location.FilePath),
                 DestinationBucket = this.bucketName,
-                DestinationKey = string.Format("{0}{1}", this.keyPrefix, location.FilePath),
+                DestinationKey = "{0}{1}".Arrange(this.keyPrefix, location.FilePath),
                 CannedACL = S3CannedACL.PublicRead
             };
 
@@ -127,7 +127,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new GetObjectRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
+                Key = "{0}{1}".Arrange(this.keyPrefix, location.FilePath)
             };
             GetObjectResponse response = transferUtility.S3Client.GetObject(request);
 
@@ -150,7 +150,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new TransferUtilityUploadRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath),
+                Key = "{0}{1}".Arrange(this.keyPrefix, content.FilePath),
                 PartSize = bufferSize,
                 ContentType = content.MimeType,
                 CannedACL = S3CannedACL.PublicRead
@@ -188,7 +188,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             TransferUtilityOpenStreamRequest request = new TransferUtilityOpenStreamRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, content.FilePath)
+                Key = "{0}{1}".Arrange(this.keyPrefix, content.FilePath)
             };
             var stream = this.transferUtility.OpenStream(request);
             return stream;
@@ -203,7 +203,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new DeleteObjectRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
+                Key = "{0}{1}".Arrange(this.keyPrefix, location.FilePath)
             };
             transferUtility.S3Client.DeleteObject(request);
         }
@@ -218,7 +218,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var request = new GetObjectRequest()
             {
                 BucketName = this.bucketName,
-                Key = string.Format("{0}{1}", this.keyPrefix, location.FilePath)
+                Key = "{0}{1}".Arrange(this.keyPrefix, location.FilePath)
             };
             try
             {
