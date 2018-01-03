@@ -51,6 +51,12 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             if (string.IsNullOrWhiteSpace(this.keyPrefix))
                 this.keyPrefix = "";
 
+            if (config.AllKeys.Contains(SchemeKey))
+                this.scheme = config[SchemeKey].Trim();
+
+            if (string.IsNullOrWhiteSpace(this.scheme))
+                this.scheme = "https";
+
             string regionEndpointString = config[RegionEndpointKey].Trim();
             var endpointField = typeof(RegionEndpoint).GetField(regionEndpointString, BindingFlags.Static | BindingFlags.Public);
             if ((string.IsNullOrWhiteSpace(regionEndpointString)) || (endpointField == null))
@@ -71,7 +77,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <returns>The resolved content item's external URL on the remote blob storage.</returns>
         public override string GetItemUrl(IBlobContentLocation content)
         {
-            return string.Concat("http://", this.bucketName, ".s3.amazonaws.com/", "{0}{1}".Arrange(this.keyPrefix, content.FilePath));
+            return string.Concat(this.scheme, "://", this.bucketName, ".s3.amazonaws.com/", "{0}{1}".Arrange(this.keyPrefix, content.FilePath));
         }
 
         /// <summary>
@@ -241,6 +247,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         public const string BucketNameKey = "bucketName";
         public const string KeyPrefixKey = "keyPrefix";
         public const string RegionEndpointKey = "regionEndpoint";
+        public const string SchemeKey = "scheme";
 
         #endregion
 
@@ -251,6 +258,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         private string secretKey = "";
         private string bucketName = "";
         private string keyPrefix = "";
+        private string scheme = "";
 
         TransferUtility transferUtility;
 
