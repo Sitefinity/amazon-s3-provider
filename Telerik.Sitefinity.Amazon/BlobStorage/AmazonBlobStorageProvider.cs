@@ -64,6 +64,26 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         }
 
         /// <summary>
+        /// Generates full CDN url from where a resource can be retrieved.
+        /// </summary>
+        /// <param name="cdnUrl">The base CDN url.</param>
+        /// <param name="contentUrl">Relative url where the content can be found.</param>
+        /// <returns>The full CDN url.</returns>
+        protected override string GetCdnUrl(string cdnUrl, string contentUrl, params char[] urlDelimiters)
+        {
+            var url = new string[]
+            {
+                cdnUrl,
+                this.bucketName,
+                contentUrl
+            }
+            .Select(x => x.Trim('/'))
+            .Aggregate((x, y) => x + "/" + y);
+
+            return url;
+        }
+
+        /// <summary>
         /// Resolves the content item's external URL on the remote blob storage.
         /// </summary>
         /// <param name="content">Descriptor of the item on the remote blob storage for which to retrieve the URL.</param>
