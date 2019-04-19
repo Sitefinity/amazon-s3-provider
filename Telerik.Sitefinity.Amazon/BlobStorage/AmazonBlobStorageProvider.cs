@@ -46,7 +46,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var regionEndpoint = (RegionEndpoint)endpointField.GetValue(null);
             this.transferUtility = new TransferUtility(accessKeyId, secretKey, regionEndpoint);
 
-            var urlScheme = this.bucketName.Contains('.') ? Http : Https;
+            this.urlScheme = this.bucketName.Contains('.') ? Http : Https;
             if (config.Keys.Contains(UrlSchemeKey))
             {
                 var urlSchemeValue = config[UrlSchemeKey];
@@ -55,12 +55,12 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                     urlSchemeValue = urlSchemeValue.ToLower();
                     if (urlSchemeValue == Http || urlSchemeValue == Https)
                     {
-                        urlScheme = urlSchemeValue;
+                        this.urlScheme = urlSchemeValue;
                     }
                 }
             }
 
-            this.serviceUrl = string.Concat(urlScheme, "://", this.bucketName, ".s3.amazonaws.com/");
+            this.serviceUrl = string.Concat(this.urlScheme, "://", this.bucketName, ".s3.amazonaws.com/");
         }
 
         /// <summary>
@@ -74,13 +74,12 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             var url = new string[]
             {
                 cdnUrl,
-                this.bucketName,
                 contentUrl
             }
             .Select(x => x.Trim('/'))
             .Aggregate((x, y) => x + "/" + y);
 
-            return url;
+            return string.Concat(this.urlScheme, "://", url);
         }
 
         /// <summary>
@@ -268,6 +267,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         private string secretKey = "";
         private string bucketName = "";
         private string serviceUrl = "";
+        private string urlScheme = "";
         TransferUtility transferUtility;
         private const string Http = "http";
         private const string Https = "https";
