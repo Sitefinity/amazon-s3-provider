@@ -3,3 +3,4 @@ obj/
 /packages
 /.nuget/NuGet.exe
 /.vs
+/*.log
