@@ -107,6 +107,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
                 DestinationKey = destination.FilePath,
                 CannedACL = S3CannedACL.PublicRead
             };
+            request.Metadata.Add(nameof(IBlobContent.FileId).ToLower(), source.FileId.ToString());
 
             transferUtility.S3Client.CopyObject(request);
         }
@@ -131,6 +132,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
 
             req.Headers.CacheControl = properties.CacheControl;
             req.Headers.ContentType = properties.ContentType;
+            req.Metadata.Add(nameof(IBlobContent.FileId).ToLower(), location.FileId.ToString());
 
             transferUtility.S3Client.CopyObject(req);
         }
@@ -218,12 +220,33 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         /// <param name="location">Descriptor of the item on the remote blob storage.</param>
         public override void Delete(IBlobContentLocation location)
         {
-            var request = new DeleteObjectRequest()
+            bool shouldDelete = true;
+            try
             {
-                BucketName = this.bucketName,
-                Key = location.FilePath
-            };
-            transferUtility.S3Client.DeleteObject(request);
+                GetObjectMetadataResponse response = transferUtility.S3Client.GetObjectMetadata(this.bucketName, location.FilePath);
+                string s3BlobFileId = response.Metadata[$"{metadataKeyPrefix}{nameof(IBlobContentLocation.FileId).ToLower()}"];
+                string blobContentLocationId = location.FileId.ToString();
+                if (!string.IsNullOrEmpty(s3BlobFileId) && !s3BlobFileId.Equals(blobContentLocationId))
+                {
+                    shouldDelete = false;
+                }
+            }
+            catch
+            {
+                // do nothing and send delete request
+            }
+            finally
+            {
+                if (shouldDelete)
+                {
+                    var request = new DeleteObjectRequest()
+                    {
+                        BucketName = this.bucketName,
+                        Key = location.FilePath
+                    };
+                    transferUtility.S3Client.DeleteObject(request);
+                }
+            }
         }
 
         /// <summary>
@@ -271,6 +294,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
         TransferUtility transferUtility;
         private const string Http = "http";
         private const string Https = "https";
+        private const string metadataKeyPrefix = "x-amz-meta-";
 
         #endregion
     }
