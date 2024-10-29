@@ -272,6 +272,31 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
             return false;
         }
 
+        // <inheritdoc/>
+        public override bool TestConnection(out Exception error)
+        {
+            try
+            {
+                ListObjectsRequest request = new ListObjectsRequest();
+                request.BucketName = this.bucketName;
+
+                ListObjectsResponse response = transferUtility.S3Client.ListObjects(request);
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    error = new Exception(string.Format("Unexpected status code when loading objects from a bucket: {0}", response.HttpStatusCode));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+                return false;
+            }
+
+            error = null;
+            return true;
+        }
+
         #endregion
 
         #region Properties
