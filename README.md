@@ -1,4 +1,4 @@
-Sitefinity's Amazon S3 Blob Storage Provider 
+Sitefinity's Amazon S3 Blob Storage Provider  
 ===================================================
 
 Sitefinity's Amazon S3 Blob Storage Provider is an implementation of a cloud blob storage provider, which stores the binary blob data of Sitefinity's library items on Amazon's Simple Storage Service (S3). This document describes how to use the provider.
