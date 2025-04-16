@@ -132,7 +132,7 @@ namespace Telerik.Sitefinity.Amazon.BlobStorage
 
             req.Headers.CacheControl = properties.CacheControl;
             req.Headers.ContentType = properties.ContentType;
-            req.Metadata.Add(nameof(IBlobContent.FileId).ToLower(), location.FileId.ToString());
+            req.Metadata.Add(nameof(IBlobContent.FileId).ToLowerInvariant(), location.FileId.ToString());
 
             transferUtility.S3Client.CopyObject(req);
         }
